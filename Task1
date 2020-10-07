@@ -1,0 +1,163 @@
+
+SIMPLE LINEAR REGRESSION
+
+In given task we have to predict the percentage of marks expected by the student based upon the number of hours they studied.In this task only two variables are involved.
+In [47]:
+
+# Importing all libraries required in this notebook
+import pandas as pd
+import numpy as np  
+import matplotlib.pyplot as plt  
+%matplotlib inline
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import r2_score
+from sklearn.metrics import mean_absolute_error
+
+In [37]:
+
+#Import the data
+url="http://bit.ly/w-data"
+data=pd.read_csv(url)
+data1=data
+print("The data is imported successfully")
+data
+
+The data is imported successfully
+
+Out[37]:
+	Hours 	Scores
+0 	2.5 	21
+1 	5.1 	47
+2 	3.2 	27
+3 	8.5 	75
+4 	3.5 	30
+5 	1.5 	20
+6 	9.2 	88
+7 	5.5 	60
+8 	8.3 	81
+9 	2.7 	25
+10 	7.7 	85
+11 	5.9 	62
+12 	4.5 	41
+13 	3.3 	42
+14 	1.1 	17
+15 	8.9 	95
+16 	2.5 	30
+17 	1.9 	24
+18 	6.1 	67
+19 	7.4 	69
+20 	2.7 	30
+21 	4.8 	54
+22 	3.8 	35
+23 	6.9 	76
+24 	7.8 	86
+In [11]:
+
+data.describe()
+
+Out[11]:
+	Hours 	Scores
+count 	25.000000 	25.000000
+mean 	5.012000 	51.480000
+std 	2.525094 	25.286887
+min 	1.100000 	17.000000
+25% 	2.700000 	30.000000
+50% 	4.800000 	47.000000
+75% 	7.400000 	75.000000
+max 	9.200000 	95.000000
+DATA VISUALIZATION
+
+Now let's plot a graph of our data so that it will give us clear idea about data.
+In [12]:
+
+#Plotting the distribution of scores
+data.plot(x='Hours', y='Scores', style='o')  
+plt.title('Hours vs Percentage')  
+plt.xlabel('Hours Studied')  
+plt.ylabel('Percentage Score')  
+plt.show()
+
+Linear Regression Model
+
+Now we prepare the data and split it in test data
+In [22]:
+
+#Splitting training and testing data
+x=data.iloc[:,:-1].values
+y=data.iloc[:,1].values
+x_train, x_test, y_train, y_test= train_test_split(x, y,train_size=0.80,test_size=0.20,random_state=0)
+
+Training the model
+In [23]:
+
+from sklearn.linear_model import LinearRegression
+linearRegressor= LinearRegression()
+linearRegressor.fit(x_train, y_train)
+y_predict= linearRegressor.predict(x_train)
+
+Training the Algorithm
+Now the spliting of our data into training and testing sets is done, now it's time to train our algorithm.
+In [28]:
+
+regressor = LinearRegression()  
+regressor.fit(x_train, y_train) 
+
+print("Training complete.")
+
+Training complete.
+
+In [31]:
+
+# Plotting the regression line
+line = regressor.coef_*x+regressor.intercept_
+# Plotting for the test data
+plt.scatter(x, y)
+plt.plot(x, line);
+plt.show()
+
+Checking the accuracy scores for training and test set
+In [33]:
+
+print('Test Score')
+print(regressor.score(x_test, y_test))
+print('Training Score')
+print(regressor.score(x_train, y_train))
+
+Test Score
+0.9454906892105356
+Training Score
+0.9515510725211553
+
+Now we make predictions
+In [41]:
+
+data= pd.DataFrame({'Actual': y_test,'Predicted': y_predict})
+data
+
+Out[41]:
+	Actual 	Predicted
+0 	20 	16.884145
+1 	27 	33.732261
+2 	69 	75.357018
+3 	30 	26.794801
+4 	62 	60.491033
+In [42]:
+
+#Let's predict the score for 9.25 hpurs
+print('Score of student who studied for 9.25 hours a dat', regressor.predict([[9.25]]))
+
+Score of student who studied for 9.25 hours a dat [93.69173249]
+
+Model Evaluation Metrics
+In [45]:
+
+#Checking the efficiency of model
+mean_squ_error = mean_squared_error(y_test, y_predict)
+mean_abs_error = mean_absolute_error(y_test, y_predict)
+print("Mean Squred Error:",mean_squ_error)
+print("Mean absolute Error:",mean_abs_error)
+
+Mean Squred Error: 21.5987693072174
+Mean absolute Error: 4.183859899002975
+
